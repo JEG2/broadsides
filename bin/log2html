@@ -1,0 +1,192 @@
+#!/usr/bin/env ruby -wKU
+
+unless ARGV.first and File.exist? ARGV.first
+  abort "USAGE:  #{$PROGRAM_NAME} PATH_TO_LOG"
+end
+
+require "erb"
+
+def move(from, plus, horizontal)
+  x  = from[/[A-L]/][0]
+  y  = from[/10|[1-9]/].to_i
+  horizontal ? "#{(x + plus).chr}#{y}" : "#{x.chr}#{y + plus}"
+end
+
+players = [ ]
+ships   = { }
+shots   = { }
+turn    = 0
+winner  = nil
+File.foreach(ARGV.first) do |line|
+  case line
+  when /\ASETUP players:(\w+),(\w+)\b/
+    players << $1 << $2
+  when /\ASHIPS (\w+)((?: [2-5]:[A-L](?:10|[1-9]):[HV]){5})\Z/
+    player        = $1
+    ships[player] = Hash.new("water")
+    $2.strip.split.each do |ship|
+      length, start, horizontal = ship.split(":")
+      length                    = length.to_i
+      horizontal                = horizontal == "H"
+      length.times do |n|
+        edge = case n
+               when 0
+                 "#{horizontal ? 'left' : 'top'}_edge"
+               when length - 1
+                 "#{horizontal ? 'right' : 'bottom'}_edge"
+               else
+                 "#{horizontal ? 'horizontal' : 'vertical'}_middle"
+               end
+        ships[player][move(start, n, horizontal)] = "ship #{edge}"
+      end
+    end
+  when /\ASHOTS (\w+)((?: [A-L](?:10|[1-9]):(?:hit|miss))+)\Z/
+    player        =   $1
+    other         =   player == players.first ? players.last : players.first
+    shots[other]  ||= Hash.new(%w[empty &nbsp;])
+    turn          +=  1
+    $2.strip.split.each do |shot|
+      where, result        = shot.split(":")
+      shots[other][where]  = [ "#{result} turn_#{turn}",
+                               result == "hit" ? "X" : "O" ]
+    end
+  when /\AWINNER (\w+)\b/
+    winner = $1
+  end
+end
+
+ERB.new(DATA.read).run
+
+__END__
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+                      "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <title><%= game = File.basename(ARGV.first, ".log") %></title>
+        <style type="text/css" media="screen">
+            body {
+                margin:     0px;
+                text-align: center;
+            }
+            #page {
+                width:  800px;
+                margin: 10px auto;
+            }
+            
+            table {
+                border-spacing: 0px;
+                border:         1px solid blue;
+            }
+            td {
+                width:  30px;
+                height: 30px;
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            div.left {
+                float: left;
+            }
+            div.right {
+                float: right;
+            }
+            
+            td.water {
+                border:           1px solid blue;
+                background-color: #66CCFF;
+            }
+            td.ship {
+                background-color: #999999;
+            }
+            td.left_edge {
+                border:       1px solid #E6E6E6;
+                border-right: 1px solid #999999;
+            }
+            td.right_edge {
+                border:      1px solid #E6E6E6;
+                border-left: 1px solid #999999;
+            }
+            td.top_edge {
+                border:        1px solid #E6E6E6;
+                border-bottom: 1px solid #999999;
+            }
+            td.bottom_edge {
+                border:     1px solid #E6E6E6;
+                border-top: 1px solid #999999;
+            }
+            td.horizontal_middle {
+                border:       1px solid #E6E6E6;
+                border-left:  1px solid #999999;
+                border-right: 1px solid #999999;
+            }
+            td.vertical_middle {
+                border:        1px solid #E6E6E6;
+                border-top:    1px solid #999999;
+                border-bottom: 1px solid #999999;
+            }
+            
+            span {
+              display: none;
+            }
+            .hit {
+                color: #DD0000;
+            }
+            .miss {
+                color: white;
+            }
+            
+            .player {
+                font-weight: bold;
+            }
+            
+            .controls span {
+                font-weight: bold;
+            }
+        </style>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div id="page">
+            <h1><%= game %></h1>
+            <% players.each_with_index do |player, i| %>
+                <div class="<%= i.zero? ? "left" : "right" %>">
+                    <table>
+                        <% (1..10).each do |y| %>
+                        <tr>
+                            <% ("A".."L").each do |x| %>
+                                <% xy = "#{x}#{y}" %>
+                                <td class="<%= ships[player][xy] %>">
+                                    <span class="<%= shots[player][xy][0] %>">
+                                        <%= shots[player][xy][1] %>
+                                    </span>
+                                </td>
+                            <% end %>
+                        </tr>
+                        <% end %>
+                    </table>
+                    <p class="player"><%= player %></p>
+                </div>
+            <% end %>
+            <div class="controls">
+                <% 1.upto(turn) do |i| %>
+                    <a href="#" class="link_<%= i %>"
+                                style="<%= i == 1 ? "" : "display: none;" %>"
+                                data-turn="<%= i %>">Next</a>
+                <% end %>
+                <span class="link_<%= turn + 1 %>">Winner:  <%= winner %></span>
+                <script type="text/javascript" charset="utf-8">
+                    $(document).ready(function() {
+                        $('a').click(function(event) {
+                            var link = $(this);
+                            var turn = link.attr('data-turn');
+                            $('.turn_' + turn).show();
+                            link.hide();
+                            $('.link_' + (parseInt(turn) + 1)).show();
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby -wKU
+
+def name(player)
+  File.basename(player, '.rb')
+end
+
+log     = ARGV.delete("--log") || "--log="
+players = Dir.glob(File.join(File.dirname(__FILE__), *%w[.. players *.rb]))
+score   = Hash.new(0)
+
+players.each_with_index do |player1, i|
+  players[(i + 1)..-1].each do |player2|
+    next if player1 == player2
+    order = [player1, player2]
+    10.times do |n|
+      game    =  "#{order.map { |player| name(player) }.join('_vs_')}_#{n}"
+      command =  [File.join(File.dirname(__FILE__), "broadsides")]
+      command << log
+      command << game unless log.include? "="
+      command.push(*order)
+      $stdout.print "Running #{game}...  "
+      $stdout.flush
+      result = `#{command.join(" ")}`
+      puts result
+      if result =~ /\A#{Regexp.escape(name(order.first))}\b/
+        score[order.first] += 1
+      else
+        score[order.last] += 1
+      end
+      order.unshift(order.pop)
+    end
+  end
+end
+
+puts
+puts "Final Scores"
+puts "============"
+players.sort_by { |player| -score[player] }.each do |player|
+  puts "#{name(player)}: #{score[player]}"
+end

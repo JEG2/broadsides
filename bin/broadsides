@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby -wKU
+
+$LOAD_PATH << File.join(File.dirname(__FILE__), *%w[.. lib])
+require "broadsides"
+
+log_name = "last_game"
+if arg = ARGV.find { |a| a =~ /\A--log(=.*)?/ }
+  if $1
+    log_name = $1[1..-1]
+  else
+    index    = ARGV.index(arg) + 1
+    log_name = ARGV[index]
+    ARGV.delete_at(index)
+  end
+  ARGV.delete(arg)
+end
+
+begin
+  if log_name.empty?
+    game = Broadsides::Game.new(*ARGV)
+  else
+    log  = { :log => open( File.join( File.dirname(__FILE__),
+                           *%W[.. log #{log_name}.log] ), "w" ) } 
+    game = Broadsides::Game.new(*(ARGV + [log]))
+  end
+  game.run
+  winner = game.finish
+  puts "#{winner} wins."
+rescue Exception => error
+  puts "USAGE:  [--log NAME] #{$PROGRAM_NAME} PATH_TO_PLAYER_1 PATH_TO_PLAYER_2"
+  puts
+  puts "Error:  #{error.message}"
+end
