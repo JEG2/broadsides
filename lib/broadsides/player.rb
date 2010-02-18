@@ -71,10 +71,10 @@ module Broadsides
     end
     
     def move(where, plus, horizontal)
-      x  = where[/[A-L]/][0]
+      x  = where[/[A-J]/][0]
       y  = where[/10|[1-9]/].to_i
       to = horizontal ? "#{(x + plus).chr}#{y}" : "#{x.chr}#{y + plus}"
-      fail "Out of bounds" unless to =~ /\A[A-L](?:10|[1-9])\z/
+      fail "Out of bounds" unless to =~ /\A[A-J](?:10|[1-9])\z/
       to
     end
   end

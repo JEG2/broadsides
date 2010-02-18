@@ -10,7 +10,7 @@ module Broadsides
         inform(:SETUP, "players:#{names} board:10x10 ships:5,4,3,3,2")
         @players.each do |player|
           response = action(:SHIPS, "5,4,3,3,2", player)
-          if response =~ /\ASHIPS(?: [2-5]:[A-L](?:10|[1-9]):[HV]){5}\z/
+          if response =~ /\ASHIPS(?: [2-5]:[A-J](?:10|[1-9]):[HV]){5}\z/
             placements = response.split[1..-1]
             unless placements.map { |ship| ship[/\A\d/] }.sort == %w[2 3 3 4 5]
               record_loss(player)
@@ -36,7 +36,7 @@ module Broadsides
         @players.each do |player|
           other    = other(player)
           response = action(:SHOTS, player.shots, player)
-          if response =~ /\ASHOTS(?: [A-L](?:10|[1-9])){#{player.shots}}\z/
+          if response =~ /\ASHOTS(?: [A-J](?:10|[1-9])){#{player.shots}}\z/
             results = response.split[1..-1].map { |shot|
               begin
                 "#{shot}:#{other.hit?(shot) ? 'hit' : 'miss'}"

@@ -1,6 +1,8 @@
+# See the jeg2_sequential.rb player for details.
+
 $stdout.sync = true
 
-shots = (1..10).map { |y| ("A".."L").map { |x| "#{x}#{y}" } }.flatten.
+shots = (1..10).map { |y| ("A".."J").map { |x| "#{x}#{y}" } }.flatten.
                                                               sort_by { rand }
 
 ARGF.each_line do |line|

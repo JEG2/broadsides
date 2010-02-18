@@ -7,7 +7,7 @@ end
 require "erb"
 
 def move(from, plus, horizontal)
-  x  = from[/[A-L]/][0]
+  x  = from[/[A-J]/][0]
   y  = from[/10|[1-9]/].to_i
   horizontal ? "#{(x + plus).chr}#{y}" : "#{x.chr}#{y + plus}"
 end
@@ -21,7 +21,7 @@ File.foreach(ARGV.first) do |line|
   case line
   when /\ASETUP players:(\w+),(\w+)\b/
     players << $1 << $2
-  when /\ASHIPS (\w+)((?: [2-5]:[A-L](?:10|[1-9]):[HV]){5})\Z/
+  when /\ASHIPS (\w+)((?: [2-5]:[A-J](?:10|[1-9]):[HV]){5})\Z/
     player        = $1
     ships[player] = Hash.new("water")
     $2.strip.split.each do |ship|
@@ -40,7 +40,7 @@ File.foreach(ARGV.first) do |line|
         ships[player][move(start, n, horizontal)] = "ship #{edge}"
       end
     end
-  when /\ASHOTS (\w+)((?: [A-L](?:10|[1-9]):(?:hit|miss))+)\Z/
+  when /\ASHOTS (\w+)((?: [A-J](?:10|[1-9]):(?:hit|miss))+)\Z/
     player        =   $1
     other         =   player == players.first ? players.last : players.first
     shots[other]  ||= Hash.new(%w[empty &nbsp;])
@@ -140,6 +140,9 @@ __END__
                 font-weight: bold;
             }
             
+            .controls {
+                clear: both;
+            }
             .controls span {
                 font-weight: bold;
             }
@@ -154,7 +157,7 @@ __END__
                     <table>
                         <% (1..10).each do |y| %>
                         <tr>
-                            <% ("A".."L").each do |x| %>
+                            <% ("A".."J").each do |x| %>
                                 <% xy = "#{x}#{y}" %>
                                 <td class="<%= ships[player][xy] %>">
                                     <span class="<%= shots[player][xy][0] %>">
