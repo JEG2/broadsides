@@ -6,6 +6,7 @@ module Broadsides
     RUBY_EXE = File::join( *Config::CONFIG.
                             values_at(*%w[bindir ruby_install_name]) ) <<
                Config::CONFIG["EXEEXT"]
+    WINDOWS  = Config::CONFIG["host_os"] =~ /mswin|mingw/
     
     def initialize(path)
       @name   = File.basename(path, ".rb")
@@ -65,9 +66,9 @@ module Broadsides
     private
     
     def shell_escape(string)
-      string.gsub(/(?=[^a-zA-Z0-9_.\/\-\x7F-\xFF\n])/n, '\\').
-             gsub(/\n/,                                 "'\n'").
-             sub(/\A\z/,                                "''")
+      string.gsub(/(?=[^a-zA-Z0-9_.\/\-#{':' if WINDOWS}\x7F-\xFF\n])/n, '\\').
+             gsub(/\n/, "'\n'").
+             sub(/\A\z/, "''")
     end
     
     def move(where, plus, horizontal)
