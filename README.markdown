@@ -35,7 +35,7 @@ On Mac OS X, I can add one more detail to the end of that command open the file 
 
     bin/log2html log/last_game.log > log/last_game.html; open log/last_game.html
 
-**Battle Viewer on Shoes**: If you are interested in another visual representation, go to [shoes directory](http://github.com/ashbb/broadsides/tree/master/shoes/). ;-)
+**Battle Viewer on Shoes**: If you are interested in another visual representation, go to [shoes directory](http://github.com/JEG2/broadsides/tree/master/shoes/). ;-)
 
 The final tool included is the `bin/tournament` script we will use to judge the entries.  It doesn't require any arguments.  It runs a series of games where all players in the `players/` directory will play each other exactly ten times.  A player gets a point for each win and all players are ranked according to their total scores.
 
