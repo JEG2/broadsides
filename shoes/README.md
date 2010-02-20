@@ -4,7 +4,7 @@ Battle Viewer on Shoes
 Do you know [Shoes](http://shoes.heroku.com/)? ;-)
 
 Snapshot
---------u
+--------
 
 ![snapshot-vattle-viewer.png](http://github.com/ashbb/broadsides/raw/master/shoes/snapshot-vattle-viewer.png)
 
