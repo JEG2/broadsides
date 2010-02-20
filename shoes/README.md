@@ -6,7 +6,7 @@ Do you know [Shoes](http://shoes.heroku.com/)? ;-)
 Snapshot
 --------
 
-![snapshot-vattle-viewer.png](http://github.com/ashbb/broadsides/raw/master/shoes/snapshot-vattle-viewer.png)
+![snapshot-battle-viewer.png](http://github.com/JEG2/broadsides/raw/master/shoes/snapshot-battle-viewer.png)
 
 
 Online Demo
