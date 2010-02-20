@@ -1,9 +1,14 @@
 #!/usr/bin/env ruby -wKU
 
+require "rbconfig"
+
 def name(player)
   File.basename(player, '.rb')
 end
 
+ruby    = File::join( *Config::CONFIG.
+                       values_at(*%w[bindir ruby_install_name]) ) <<
+           Config::CONFIG["EXEEXT"]
 log     = ARGV.delete("--log") || "--log="
 players = Dir.glob(File.join(File.dirname(__FILE__), *%w[.. players *.rb]))
 score   = Hash.new(0)
@@ -20,7 +25,7 @@ players.each_with_index do |player1, i|
       command.push(*order)
       $stdout.print "Running #{game}...  "
       $stdout.flush
-      result = `ruby #{command.join(" ")}`
+      result = `#{ruby} #{command.join(" ")}`
       puts result
       if result =~ /\A#{Regexp.escape(name(order.first))}\b/
         score[order.first] += 1

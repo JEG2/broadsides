@@ -19,7 +19,7 @@ The Tools
 
 I have provided a simple game engine, two weak players, and utility scripts for viewing the games in your browser and running a tournament.  You can [download these tools from Github](http://github.com/JEG2/broadsides).
 
-The tools were developed with Ruby 1.8 and probably do not work properly with Ruby 1.9.  I have also not tested them on Windows as I use Unix.  I'm hopeful they will work there, but it's unconfirmed.  No external dependencies are required to use them, though the Rake gem, a Web browser that supports JavaScript, and an Internet connection are helpful.
+The tools were developed with Ruby 1.8 and probably do not work properly with Ruby 1.9.  No external dependencies are required to use them, though the Rake gem, a Web browser that supports JavaScript, and an Internet connection are helpful.
 
 Running a single game between two players is as easy as invoking the game script with the path to both player files.  Thus you can run a game with the two included players with the following command, assuming you are in the root directory of the project from Github:
 
