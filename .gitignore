@@ -1,2 +1,4 @@
 log/*.log
 log/*.html
+.DS_Store
+**/.DS_Store
