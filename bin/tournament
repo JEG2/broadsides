@@ -20,7 +20,7 @@ players.each_with_index do |player1, i|
       command.push(*order)
       $stdout.print "Running #{game}...  "
       $stdout.flush
-      result = `#{command.join(" ")}`
+      result = `ruby #{command.join(" ")}`
       puts result
       if result =~ /\A#{Regexp.escape(name(order.first))}\b/
         score[order.first] += 1
