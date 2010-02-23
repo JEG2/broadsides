@@ -26,8 +26,8 @@ begin
   game.run
   winner = game.finish
   puts "#{winner} wins."
-#rescue Exception => error
-#  puts "USAGE:  [--log NAME] #{$PROGRAM_NAME} PATH_TO_PLAYER_1 PATH_TO_PLAYER_2"
-#  puts
-#  puts "Error:  #{error.message}"
+rescue Exception => error
+  puts "USAGE:  [--log NAME] #{$PROGRAM_NAME} PATH_TO_PLAYER_1 PATH_TO_PLAYER_2"
+  puts
+  puts "Error:  #{error.message}"
 end
