@@ -8,6 +8,7 @@ Snapshot
 
 ![snapshot-battle-viewer.png](http://github.com/JEG2/broadsides/raw/master/shoes/snapshot-battle-viewer.png)
 
+![snapshot-battle-viewer.png](http://github.com/eregon/broadsides/raw/master/shoes/snapshot-battle-viewer-osx.png)
 
 Online Demo
 -----------
